@@ -1,7 +1,8 @@
 sample config.yml in plugins/Splash/config.yml:
 
 --
-PLAYER_LOGIN: http://localhost/api/player/login
+PLAYER_JOIN: http://localhost/api/player/join
+PLAYER_QUIT: http://localhost/api/player/quit
 PLAYER_DEATH: http://localhost/api/player/death
 --
 

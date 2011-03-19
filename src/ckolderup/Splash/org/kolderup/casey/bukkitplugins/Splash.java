@@ -1,18 +1,19 @@
 package org.kolderup.casey.bukkitplugins;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Map;
-import org.bukkit.entity.Player;
-import org.bukkit.Server;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
-import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 import org.yaml.snakeyaml.Yaml;
@@ -31,13 +32,14 @@ public class Splash extends JavaPlugin {
         // Load URLs from YAML file
     	urlsForEvents = loadUrls("plugins/Splash/config.yml");
     	
-    	playerListener = new SplashPlayerListener(this, urlsForEvents);
-    	entityListener = new SplashEntityListener(this, urlsForEvents);
+    	playerListener = new SplashPlayerListener(this);
+    	entityListener = new SplashEntityListener(this);
     	
         // Register our events
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvent(Type.ENTITY_DEATH, entityListener, Priority.Monitor, this);
-        pm.registerEvent(Type.PLAYER_LOGIN, playerListener, Priority.Monitor, this);
+        pm.registerEvent(Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
+        pm.registerEvent(Type.PLAYER_QUIT, playerListener, Priority.Monitor, this);
 
         // EXAMPLE: Custom code, here we just output some info so we can check all is well
         PluginDescriptionFile pdfFile = this.getDescription();
@@ -71,6 +73,35 @@ public class Splash extends JavaPlugin {
 		}
 
 		return (Map<String, String>)res;
+    }
+    
+    public void postRequest(String eventKey, String data) {
+    	//HTTP POST	
+		String urlString = urlsForEvents.get(eventKey);
+		
+		try {
+			
+			URL url = new URL(urlString);
+			URLConnection conn = url.openConnection();
+			conn.setDoOutput(true);
+			OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+			writer.write(data);
+			writer.flush();
+			
+			System.out.println("Sent update to" + urlString + ", response follows:");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				System.out.println(line);
+			}
+			
+			writer.close();
+			reader.close();
+		}
+		catch (Exception e) {
+			System.out.println("Malformed HTTP request, request may or may not have exceeded.");
+			System.out.println(e.getMessage());
+		}
     }
 }
 
