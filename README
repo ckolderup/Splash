@@ -1,0 +1,10 @@
+sample config.yml in plugins/Splash/config.yml:
+
+--
+PLAYER_LOGIN: http://localhost/api/player/login
+PLAYER_DEATH: http://localhost/api/player/death
+--
+
+That's it! Just set up a webapp to handle those requests and you're good.
+
+Possible enhancements: some sort of token-based auth, more mappable server events, more information sent in the HTTP request

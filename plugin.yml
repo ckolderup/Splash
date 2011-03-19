@@ -1,0 +1,5 @@
+name: Splash
+
+main: org.kolderup.casey.bukkitplugins.Splash
+
+version: 0.1
