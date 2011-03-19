@@ -6,6 +6,8 @@ PLAYER_QUIT: http://localhost/api/player/quit
 PLAYER_DEATH: http://localhost/api/player/death
 --
 
-That's it! Just set up a webapp to handle those requests and you're good.
+That's it! Just set up a webapp to handle those requests and you're good. If you're Splashing, maybe you could get soaked?
+
+http://github.com/ckolderup/soaked
 
 Possible enhancements: some sort of token-based auth, more mappable server events, more information sent in the HTTP request
