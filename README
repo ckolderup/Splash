@@ -10,4 +10,9 @@ That's it! Just set up a webapp to handle those requests and you're good. If you
 
 http://github.com/ckolderup/soaked
 
-Possible enhancements: some sort of token-based auth, more mappable server events, more information sent in the HTTP request
+TODO:
+ * some sort of token-based auth
+ * more server events
+ * more information sent in the HTTP request
+ * retry on non-200-level response status codes
+ * periodically sending a player list so soaked can verify its own internal state of who's currently online

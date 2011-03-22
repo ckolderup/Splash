@@ -9,8 +9,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.URL;
-import java.net.URLConnection;
+import java.net.HttpURLConnection;
 import java.util.Map;
+import java.util.HashSet;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -28,9 +29,12 @@ public class Splash extends JavaPlugin {
     private SplashPlayerListener playerListener = null; 
     private SplashEntityListener entityListener = null;
     private Map<String, String> urlsForEvents = null;
+    private HashSet<String> warnedAbout = null;
+    
     public void onEnable() {
         // Load URLs from YAML file
     	urlsForEvents = loadUrls("plugins/Splash/config.yml");
+    	warnedAbout = new HashSet<String>();
     	
     	playerListener = new SplashPlayerListener(this);
     	entityListener = new SplashEntityListener(this);
@@ -79,16 +83,31 @@ public class Splash extends JavaPlugin {
     	//HTTP POST	
 		String urlString = urlsForEvents.get(eventKey);
 		
+		if (urlString == null) {
+			if (!warnedAbout.contains(eventKey)) {
+				System.out.println("No URL in config with key " + eventKey + ", so no request to make. " +
+					"You won't receive any further warnings about this key.");
+				warnedAbout.add(eventKey);
+			}
+			return;
+		}
+		
+		HttpURLConnection conn = null;
 		try {
 			
 			URL url = new URL(urlString);
-			URLConnection conn = url.openConnection();
+			conn = (HttpURLConnection)url.openConnection();
+			conn.setRequestMethod("POST");
 			conn.setDoOutput(true);
+			conn.setReadTimeout(1000);
+			conn.connect();
+			
 			OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
 			writer.write(data);
 			writer.flush();
 			
-			System.out.println("Sent update to" + urlString + ", response follows:");
+			System.out.println("Sent update to " + urlString + ", response follows:");
+			System.out.println(conn.getResponseCode() + " " + conn.getResponseMessage());
 			BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -101,6 +120,9 @@ public class Splash extends JavaPlugin {
 		catch (Exception e) {
 			System.out.println("Malformed HTTP request, request may or may not have exceeded.");
 			System.out.println(e.getMessage());
+		} finally { 
+			if(conn != null)
+				conn.disconnect();
 		}
     }
 }
