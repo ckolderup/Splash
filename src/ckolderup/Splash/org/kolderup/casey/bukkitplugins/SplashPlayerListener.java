@@ -2,7 +2,8 @@ package org.kolderup.casey.bukkitplugins;
 
 
 import java.net.URLEncoder;
-import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerListener;
 
 /**
@@ -17,7 +18,7 @@ public class SplashPlayerListener extends PlayerListener {
     }
 
     @Override
-    public void onPlayerQuit(PlayerEvent event) {
+    public void onPlayerQuit(PlayerQuitEvent event) {
     	try { 
 	    	String data =  URLEncoder.encode("playerName", "UTF-8") + "=" + URLEncoder.encode(event.getPlayer().getName(), "UTF-8"); 
 	    	plugin.postRequest("PLAYER_QUIT", data);
@@ -27,7 +28,7 @@ public class SplashPlayerListener extends PlayerListener {
     
     //Insert Player related code here
     @Override
-	public void onPlayerJoin(PlayerEvent event) {
+	public void onPlayerJoin(PlayerJoinEvent event) {
     	try {
 	    	String data =  URLEncoder.encode("playerName", "UTF-8") + "=" + URLEncoder.encode(event.getPlayer().getName(), "UTF-8");
 	    	plugin.postRequest("PLAYER_JOIN", data);
