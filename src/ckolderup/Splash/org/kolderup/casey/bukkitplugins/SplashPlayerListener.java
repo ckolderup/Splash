@@ -23,7 +23,6 @@ public class SplashPlayerListener extends PlayerListener {
 	    	String data =  URLEncoder.encode("playerName", "UTF-8") + "=" + URLEncoder.encode(event.getPlayer().getName(), "UTF-8"); 
 	    	plugin.postRequest("PLAYER_QUIT", data);
     	} catch (Exception e) { }
-    	super.onPlayerQuit(event);
     }
     
     //Insert Player related code here
@@ -33,7 +32,6 @@ public class SplashPlayerListener extends PlayerListener {
 	    	String data =  URLEncoder.encode("playerName", "UTF-8") + "=" + URLEncoder.encode(event.getPlayer().getName(), "UTF-8");
 	    	plugin.postRequest("PLAYER_JOIN", data);
     	} catch (Exception e) { }
-    	super.onPlayerJoin(event);
 	}
 }
 

@@ -26,6 +26,5 @@ public class SplashEntityListener extends EntityListener {
 		    	plugin.postRequest("PLAYER_DEATH", data);
 	    	} catch (Exception e) { }
 		}
-		super.onEntityDeath(event);
 	}
 }
